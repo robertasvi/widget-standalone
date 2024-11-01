@@ -7,7 +7,7 @@ on:
         required: true
         default: 'minor'
         description: Choose auto-versioning type
-        type: choise
+        type: choice
         options:
           - major
           - minor
@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: git config user.email "robertasvi@users.noreply.github.com"
       - run: git config user.name "robertasvi"
-      - run: npm version ${auto_version} -m "v%s"
+      - run: npm version ${{github.event.inputs.environment}} -m "v%s"
       - run: VERSION=$(node -p "require('./package.json').version")
       - run: git tag ${VERSION}
       - run: git push --follow-tags
