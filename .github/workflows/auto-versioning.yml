@@ -9,11 +9,11 @@ jobs:
   version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: git config user.email "robertasvi@users.noreply.github.com"
       - run: git config user.name "robertasvi"
       - run: npm version minor -m "v%s"
       - run: VERSION=$(node -p "require('./package.json').version")
       - run: git tag ${VERSION}
-      - run: git push "https://robertasvi:${{ secrets.ACCESS_TOKEN }}@github.com/robertasvi/widget-standalone.git" --follow-tags
-      - run: git push "https://robertasvi:${{ secrets.ACCESS_TOKEN }}@github.com/robertasvi/widget-standalone.git" --tags
+      - run: git push --follow-tags
+      - run: git push --tags
