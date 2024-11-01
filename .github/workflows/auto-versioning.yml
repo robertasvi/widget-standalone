@@ -1,0 +1,19 @@
+name: Version Increment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: git config user.email "pro@users.noreply.github.com"
+      - run: git config user.name "pro"
+      - run: npm version minor -m "v%s"
+      - run: VERSION=$(node -p "require('./package.json').version")
+      - run: git tag ${VERSION}
+      - run: git push "https://pro:${{ secrets.ACCESS_TOKEN }}@github.com/robertasvi/widget-standalone.git" --follow-tags
+      - run: git push "https://pro:${{ secrets.ACCESS_TOKEN }}@github.com/robertasvi/widget-standalone.git" --tags
