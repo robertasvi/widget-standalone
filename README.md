@@ -12,7 +12,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Versioning
 
-GitHub actions auto generates version for project on git push.
+GitHub Actions automatically generates project version on git push.
 
 ## Pull request verification
 

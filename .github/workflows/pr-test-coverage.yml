@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      CI: true
 
     steps:
       - name: Checkout repository
@@ -32,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: Run unit tests with coverage
-        run: npm test -- --watch=false --code-coverage --browsers=ChromeHeadless
+        run: npm test -- --watch=false --code-coverage --browsers=ChromeHeadless --no-progress
 
       - name: Install diff-cover
         run: python -m pip install diff-cover
