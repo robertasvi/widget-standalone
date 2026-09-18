@@ -12,7 +12,12 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Versioning
 
-Github actions auto generates version for project on git push.
+GitHub actions auto generates version for project on git push.
+
+## Pull request verification
+
+Every new pull request runs the `Pull Request Test Coverage` workflow.
+It executes unit tests with code coverage and fails if changed lines are not covered by tests.
 
 ## Build
 
