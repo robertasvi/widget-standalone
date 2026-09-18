@@ -12,6 +12,7 @@ jobs:
       contents: read
     env:
       CI: true
+      COVERAGE_FILE: coverage/widget-standalone/lcov.info
 
     steps:
       - name: Checkout repository
@@ -46,7 +47,7 @@ jobs:
 
       - name: Verify changed lines are covered by tests
         run: |
-          LCOV_FILE="coverage/widget-standalone/lcov.info"
+          LCOV_FILE="$COVERAGE_FILE"
           if [ ! -f "$LCOV_FILE" ]; then
             echo "$LCOV_FILE was not generated."
             exit 1
