@@ -37,7 +37,7 @@ jobs:
         run: npm test -- --watch=false --code-coverage --browsers=ChromeHeadless --no-progress
 
       - name: Install diff-cover
-        run: python -m pip install diff-cover
+        run: python -m pip install diff-cover==10.5.1
 
       - name: Fetch base branch
         run: |
@@ -45,9 +45,9 @@ jobs:
 
       - name: Verify changed lines are covered by tests
         run: |
-          LCOV_FILE=$(find coverage -name lcov.info | head -n 1)
-          if [ -z "$LCOV_FILE" ]; then
-            echo "lcov.info was not generated."
+          LCOV_FILE="coverage/widget-standalone/lcov.info"
+          if [ ! -f "$LCOV_FILE" ]; then
+            echo "$LCOV_FILE was not generated."
             exit 1
           fi
 
