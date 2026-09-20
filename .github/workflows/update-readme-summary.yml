@@ -1,0 +1,106 @@
+name: Update README Summary
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme-summary:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rewrite generated README summary
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const { execSync } = require('child_process');
+
+          const readmePath = 'README.md';
+          const startMarker = '<!-- main-branch-summary:start -->';
+          const endMarker = '<!-- main-branch-summary:end -->';
+          const zeroSha = '0'.repeat(40);
+          const before = process.env.BEFORE_SHA;
+          const after = process.env.AFTER_SHA;
+          const hasBefore = Boolean(before) && before !== zeroSha;
+
+          const exec = (command) => execSync(command, { encoding: 'utf8' }).trim();
+          const commitRange = hasBefore ? `${before}..${after}` : after;
+          const fileRange = hasBefore ? `${before}..${after}` : `${after}^!`;
+
+          const commitLines = exec(`git log --reverse --pretty=format:%h%x09%s ${commitRange}`)
+            .split('\n')
+            .filter(Boolean);
+
+          let fileLines = [];
+          try {
+            fileLines = exec(`git diff --name-only ${fileRange}`)
+              .split('\n')
+              .filter(Boolean);
+          } catch (error) {
+            fileLines = exec(`git show --pretty=format: --name-only ${after}`)
+              .split('\n')
+              .filter(Boolean);
+          }
+
+          const updatedAt = exec(`git show -s --format=%cI ${after}`);
+          const uniqueFiles = [...new Set(fileLines)];
+          const summaryLines = [
+            `_Last updated: ${updatedAt}_`,
+            '',
+            `- ${commitLines.length} commit(s) included in the latest \`main\` update`,
+            `- ${uniqueFiles.length} file(s) changed`,
+            '',
+            '### Commit summaries',
+            ...(commitLines.length > 0
+              ? commitLines.map((line) => {
+                  const [sha, subject] = line.split('\t');
+                  return `- \`${sha}\` ${subject}`;
+                })
+              : ['- No commits found.']),
+            '',
+            '### Changed files',
+            ...(uniqueFiles.length > 0
+              ? uniqueFiles.map((file) => `- \`${file}\``)
+              : ['- No files found.']),
+          ];
+
+          const generatedBlock = `${startMarker}\n${summaryLines.join('\n')}\n${endMarker}`;
+          const readme = fs.readFileSync(readmePath, 'utf8');
+
+          if (readme.includes(startMarker) && readme.includes(endMarker)) {
+            const startIndex = readme.indexOf(startMarker);
+            const endIndex = readme.indexOf(endMarker) + endMarker.length;
+            const updated = `${readme.slice(0, startIndex)}${generatedBlock}${readme.slice(endIndex)}`;
+            fs.writeFileSync(readmePath, updated.replace(/\n{3,}/g, '\n\n'));
+          } else {
+            const separator = readme.endsWith('\n') ? '\n' : '\n\n';
+            fs.writeFileSync(readmePath, `${readme}${separator}${generatedBlock}\n`);
+          }
+          NODE
+
+      - name: Commit README changes
+        run: |
+          if git diff --quiet -- README.md; then
+            echo "README is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "docs: update README summary"
+          git push

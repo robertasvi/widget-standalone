@@ -19,6 +19,14 @@ GitHub Actions automatically generates the project version on each `git push`.
 Every new pull request runs the `Pull Request Test Coverage` workflow.
 It executes unit tests with code coverage and fails if changed lines are not covered by tests.
 
+## Main branch change summary
+
+This section is updated automatically whenever non-README changes are pushed to `main`.
+
+<!-- main-branch-summary:start -->
+_No updates have been summarized yet._
+<!-- main-branch-summary:end -->
+
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
