@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update-readme-summary:
-    if: github.actor != 'github-actions[bot]' || github.event.head_commit.message != 'docs: update README summary'
+    if: github.actor != 'github-actions[bot]' && github.event.head_commit.message != 'docs: update README summary'
     runs-on: ubuntu-latest
 
     steps:
@@ -55,7 +55,7 @@ jobs:
               .filter(Boolean);
           }
 
-          const updatedAt = git(['show', '-s', '--format=%cI', after]);
+          const updatedAt = new Date().toISOString();
           const uniqueFiles = [...new Set(fileLines)];
           const ignoredFiles = new Set(['README.md', '.github/workflows/update-readme-summary.yml']);
           const relevantFiles = uniqueFiles.filter((file) => !ignoredFiles.has(file));
