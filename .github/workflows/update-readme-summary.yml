@@ -39,10 +39,23 @@ jobs:
           const git = (args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
           const commitRange = hasBefore ? `${before}..${after}` : after;
           const fileRange = hasBefore ? `${before}..${after}` : `${after}^!`;
+          const escapeMarkdown = (value) =>
+            value
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/[`[\]]/g, '\\$&');
 
-          const commitLines = git(['log', '--reverse', '--pretty=format:%h%x09%s', commitRange])
-            .split('\n')
-            .filter(Boolean);
+          let commitLines = [];
+          try {
+            commitLines = git(['log', '--reverse', '--pretty=format:%h%x09%s', commitRange])
+              .split('\n')
+              .filter(Boolean);
+          } catch (error) {
+            commitLines = git(['log', '--reverse', '--max-count=1', '--pretty=format:%h%x09%s', after])
+              .split('\n')
+              .filter(Boolean);
+          }
 
           let fileLines = [];
           try {
@@ -75,13 +88,13 @@ jobs:
             ...(commitLines.length > 0
               ? commitLines.map((line) => {
                   const [sha, subject] = line.split('\t');
-                  return `- \`${sha}\` ${subject}`;
+                  return `- \`${sha}\` ${escapeMarkdown(subject ?? '')}`;
                 })
               : ['- No commits found.']),
             '',
             '### Changed files',
             ...(relevantFiles.length > 0
-              ? relevantFiles.map((file) => `- \`${file}\``)
+              ? relevantFiles.map((file) => `- \`${escapeMarkdown(file)}\``)
               : ['- No files found.']),
           ];
 
