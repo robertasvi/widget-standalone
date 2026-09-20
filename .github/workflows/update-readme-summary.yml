@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update-readme-summary:
-    if: github.actor != 'github-actions[bot]' && github.event.head_commit.message != 'docs: update README summary'
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
 
     steps:
@@ -94,8 +94,8 @@ jobs:
             const updated = `${readme.slice(0, startIndex)}${generatedBlock}${readme.slice(endIndex)}`;
             fs.writeFileSync(readmePath, updated.replace(/\n{3,}/g, '\n\n'));
           } else {
-            const separator = readme.endsWith('\n') ? '\n' : '\n\n';
-            fs.writeFileSync(readmePath, `${readme}${separator}${generatedBlock}\n`);
+            const separator = readme.endsWith('\n') ? '' : '\n';
+            fs.writeFileSync(readmePath, `${readme}${separator}\n${generatedBlock}\n`);
           }
           NODE
 
