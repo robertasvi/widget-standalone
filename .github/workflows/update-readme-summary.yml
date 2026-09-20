@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update-readme-summary:
-    if: github.event.head_commit.message != 'docs: update README summary'
+    if: github.actor != 'github-actions[bot]' || github.event.head_commit.message != 'docs: update README summary'
     runs-on: ubuntu-latest
 
     steps:
@@ -57,9 +57,11 @@ jobs:
 
           const updatedAt = git(['show', '-s', '--format=%cI', after]);
           const uniqueFiles = [...new Set(fileLines)];
+          const ignoredFiles = new Set(['README.md', '.github/workflows/update-readme-summary.yml']);
+          const relevantFiles = uniqueFiles.filter((file) => !ignoredFiles.has(file));
 
-          if (uniqueFiles.length > 0 && uniqueFiles.every((file) => file === 'README.md')) {
-            console.log('Skipping README summary update for a README-only push.');
+          if (relevantFiles.length === 0) {
+            console.log('Skipping README summary update because no relevant files changed.');
             process.exit(0);
           }
 
@@ -67,7 +69,7 @@ jobs:
             `_Last updated: ${updatedAt}_`,
             '',
             `- ${commitLines.length} commit(s) included in the latest \`main\` update`,
-            `- ${uniqueFiles.length} file(s) changed`,
+            `- ${relevantFiles.length} relevant file(s) changed`,
             '',
             '### Commit summaries',
             ...(commitLines.length > 0
@@ -78,8 +80,8 @@ jobs:
               : ['- No commits found.']),
             '',
             '### Changed files',
-            ...(uniqueFiles.length > 0
-              ? uniqueFiles.map((file) => `- \`${file}\``)
+            ...(relevantFiles.length > 0
+              ? relevantFiles.map((file) => `- \`${file}\``)
               : ['- No files found.']),
           ];
 

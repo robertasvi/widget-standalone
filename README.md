@@ -21,7 +21,7 @@ It executes unit tests with code coverage and fails if changed lines are not cov
 
 ## Main branch change summary
 
-This section is updated automatically whenever non-README changes are pushed to `main`.
+This section is updated automatically whenever relevant changes are pushed to `main`.
 
 <!-- main-branch-summary:start -->
 _No updates have been summarized yet._
