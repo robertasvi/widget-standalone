@@ -24,7 +24,16 @@ It executes unit tests with code coverage and fails if changed lines are not cov
 This section is updated automatically whenever relevant changes are pushed to `main`.
 
 <!-- main-branch-summary:start -->
-_No updates have been summarized yet._
+_Last updated: 2026-09-21T19:45:32.208Z_
+
+- 1 commit(s) included in the latest `main` update
+- 1 relevant file(s) changed
+
+### Commit summaries
+- `28a9f98` Update front widget label in HTML template
+
+### Changed files
+- `src/app/front-widget/front-widget.component.html`
 <!-- main-branch-summary:end -->
 
 ## Build
