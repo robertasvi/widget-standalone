@@ -24,16 +24,21 @@ It executes unit tests with code coverage and fails if changed lines are not cov
 This section is updated automatically whenever relevant changes are pushed to `main`.
 
 <!-- main-branch-summary:start -->
-_Last updated: 2026-09-21T19:45:32.208Z_
+_Last updated: 2026-09-21T19:58:27.761Z_
 
-- 1 commit(s) included in the latest `main` update
-- 1 relevant file(s) changed
+- 2 commit(s) included in the latest `main` update
+- 5 relevant file(s) changed
 
 ### Commit summaries
-- `28a9f98` Update front widget label in HTML template
+- `f88f5a6` Fix counter component routing
+- `736694e` Merge branch 'main' of https://github.com/robertasvi/widget-standalone
 
 ### Changed files
-- `src/app/front-widget/front-widget.component.html`
+- `src/app/app.config.ts`
+- `src/app/app.module.ts`
+- `src/app/app.routes.ts`
+- `src/app/counter/counter.component.ts`
+- `tsconfig.json`
 <!-- main-branch-summary:end -->
 
 ## Build
